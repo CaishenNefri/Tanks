@@ -52,53 +52,53 @@ void Game::processEvents()
 		{
 			window.close();
 		}
-
-		sf::Vector2f position = mushroom.getPosition();
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			sf::Vector2f move(1, 0);
-			mushroom.setPosition(position + move);
-			std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		{
-			sf::Vector2f move(0, 1);
-			mushroom.setPosition(position - move);
-			std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			sf::Vector2f move(0, 1);
-			mushroom.setPosition(position + move);
-			std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			sf::Vector2f move(1, 0);
-			mushroom.setPosition(position - move);
-			std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-		}
-
 	}
 }
 
 void Game::update()
 {
+	sf::Vector2f position = mushroom.getPosition();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		sf::Vector2f move(1, 0);
+		mushroom.setPosition(position + move);
+		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		sf::Vector2f move(0, 1);
+		mushroom.setPosition(position - move);
+		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		sf::Vector2f move(0, 1);
+		mushroom.setPosition(position + move);
+		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		sf::Vector2f move(1, 0);
+		mushroom.setPosition(position - move);
+		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
+	}
+
+
 }
 
 void Game::render()
 {
 	
-	texture.loadFromFile("tank.png");
+	texture.loadFromFile("sprite.png");
 	sf::IntRect rectSourceSprite(0, 0, 16, 16);
 	mushroom.setTexture(texture);
 	mushroom.setTextureRect(rectSourceSprite);
 	sf::Vector2f scale = mushroom.getScale();
 	mushroom.setScale(scale.x * 20, scale.y * 20);
 	sf::Vector2u size = texture.getSize();
-	//mushroom.setOrigin(size.x / 10, size.y / 10);
+	mushroom.setOrigin(size.x / 10, size.y / 10);
 
 
 	window.clear(sf::Color(16, 16, 16, 255)); // Dark gray.
