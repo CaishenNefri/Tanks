@@ -7,26 +7,24 @@ Game::Game()
 	window.create(sf::VideoMode(windowHeight, windowWidth), "Battle Game");
 	window.setVerticalSyncEnabled(true);
 	window.setKeyRepeatEnabled(false);
-
-
-	texture.loadFromFile("sprite.png");
-	sf::IntRect rectSourceSprite(16*4, 16*3, 16, 16);
-	mushroom.setTexture(texture);
-	mushroom.setTextureRect(rectSourceSprite);
-	sf::Vector2f scale = mushroom.getScale();
-	mushroom.setScale(scale.x * 10, scale.y * 10);
-	sf::Vector2u size = texture.getSize();
-	mushroom.setOrigin(0, 0);
 }
 
 
 Game::~Game()
 {
+
 }
 
 void Game::run()
 {
-	
+	texture.loadFromFile("sprite.png");
+	sf::IntRect rectSourceSprite(16 * 4, 16 * 3, 16, 16);
+	mushroom.setTexture(texture);
+	mushroom.setTextureRect(rectSourceSprite);
+	sf::Vector2f scale = mushroom.getScale();
+	mushroom.setScale(scale.x * 2, scale.y * 2);
+	sf::Vector2u size = texture.getSize();
+	mushroom.setOrigin(0, 0);
 
 
 	while (window.isOpen())
@@ -35,6 +33,17 @@ void Game::run()
 		update();
 		render();
 	}
+}
+
+void Game::buildMap()
+{
+	sf::Texture text;
+	sf::Vector2f scale;
+	text.loadFromFile("sprite.png");
+	sf::IntRect rect(16 * 16, 16 * 0, 16, 16);
+	sf::Sprite wall(text, rect);
+	scale = wall.getScale();
+	wall.setScale(scale.x * 2, scale.y * 2);
 }
 
 void Game::processEvents()
@@ -69,29 +78,30 @@ void Game::processEvents()
 void Game::update()
 {
 	sf::Vector2f position = mushroom.getPosition();
+	int distance = 2;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		sf::Vector2f move(1, 0);
+		sf::Vector2f move(distance, 0);
 		mushroom.setPosition(position + move);
 		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		sf::Vector2f move(0, 1);
+		sf::Vector2f move(0, distance);
 		mushroom.setPosition(position - move);
 		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		sf::Vector2f move(0, 1);
+		sf::Vector2f move(0, distance);
 		mushroom.setPosition(position + move);
 		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		sf::Vector2f move(1, 0);
+		sf::Vector2f move(distance, 0);
 		mushroom.setPosition(position - move);
 		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
 	}

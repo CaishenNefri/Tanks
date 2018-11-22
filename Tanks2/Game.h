@@ -8,6 +8,7 @@ public:
 	Game();
 	~Game();
 	void run();
+	void buildMap();
 
 private:
 	void processEvents();
@@ -17,6 +18,6 @@ private:
 	sf::RenderWindow window;
 	sf::Texture texture;
 	sf::Sprite mushroom;
-	int windowHeight = 800;
-	int windowWidth = 640;
+	int windowHeight = 416;
+	int windowWidth = 416;
 };
