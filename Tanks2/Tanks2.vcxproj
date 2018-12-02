@@ -166,7 +166,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Tank.h" />
-    <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
@@ -178,12 +177,10 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tank.cpp" />
-    <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Documents\Studia\Cpp\image.png" />
     <Image Include="sprite.png" />
-    <Image Include="tileset.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
