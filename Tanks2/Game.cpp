@@ -1,11 +1,24 @@
 #include "pch.h"
 #include "Game.h"
+#include "ResourceManager.h"
+#include "InputManager.h"
 
 
 Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
 {
 	//TODO Set timer, not framelock
-	_window->setFramerateLimit(60);
+	//_window->setFramerateLimit(60);
+
+
+	//Inicjalizacja obiektu
+	m_Rect.setSize({ 64.0f,64.0f });
+	m_Rect.setPosition({ 64.0f, 64.0f });
+	m_Rect.setTexture(ResourceManager::GetInstance()->RequestTexture("tank"));
+
+	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
+	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
+	InputManager::GetInstance()->AddAction(Input::Left, sf::Keyboard::Key::Left);
+	InputManager::GetInstance()->AddAction(Input::Right, sf::Keyboard::Key::Right);
 }
 
 
@@ -14,6 +27,7 @@ Game::~Game()
 	// delete instance, remove memory leak
 	delete _window;
 	_window = nullptr;
+	ResourceManager::GetInstance()->CleanUp();
 	//TODO Add other pointers
 }
 
@@ -64,6 +78,34 @@ bool Game::processEvents()
 
 void Game::update(float deltaTime)
 {
+	// Inicialized loccaly for not typing a lot
+	auto input = InputManager::GetInstance();
+	auto pos = m_Rect.getPosition();
+
+	sf::Vector2<float> velocity;
+	float speed = 200.0f;
+
+	// Sprawdza czy nacisniete klawicze i odpowiednio nadaje kierunek poruszania siê	
+	if (input->IsActionTriggered(Input::Up))
+	{
+		velocity.y = -speed;
+	}
+	if (input->IsActionTriggered(Input::Down))
+	{
+		velocity.y = speed;
+	}
+	if (input->IsActionTriggered(Input::Left))
+	{
+		velocity.x = -speed;
+	}
+	if (input->IsActionTriggered(Input::Right))
+	{
+		velocity.x = speed;
+	}
+
+	pos += velocity * deltaTime;
+	
+	m_Rect.setPosition(pos);
 }
 
 void Game::render()
@@ -72,7 +114,7 @@ void Game::render()
 	_window->clear();
 
 	// Draw tht tank
-	//
+	_window->draw(m_Rect);
 
 	// End the current frame and display its contents on screen
 	_window->display();

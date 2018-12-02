@@ -19,5 +19,7 @@ private:
 	void render();
 
 	sf::RenderWindow* _window = nullptr;
+	//Test Resource Manager
+	sf::RectangleShape m_Rect;
 };
 
