@@ -11,14 +11,16 @@ class Game
 public:
 	Game();
 	~Game();
-	
 	void run();
 
 private:
-	void processEvents();
-	void update();
+	bool processEvents();
+	void update(float deltaTime);
 	void render();
 
-	sf::RenderWindow _window;
+	sf::RenderWindow* _window = nullptr;
+	//sf::Texture* tankTexture = nullptr;
+	//sf::Sprite *tanksprite = nullptr;
+
 };
 
