@@ -11,27 +11,49 @@ TileMap::~TileMap()
 {
 }
 
-bool TileMap::load(const std::string & tileset, sf::Vector2i tileSize, const int * tiles, unsigned int width, unsigned int height)
+bool TileMap::load(const std::string & tileset, sf::Vector2f tileSize, const int * tiles, unsigned int width, unsigned int height)
 {
 	// load the tileset texture
 	if(!m_tileset.loadFromFile(tileset))
 		return false;
 
-	sf::Vector2i begin(16 * 16, 0);
+	sf::Vector2f begin(16, 0.f);
 	sf::VertexArray pocz(sf::Points, 2);
 	pocz[0].position = sf::Vector2f(begin.x * 6, begin.y);
 	pocz[1].position = sf::Vector2f(begin.x, begin.y);
 
 
 
-	sf::IntRect BEGIN(begin, tileSize);
+	sf::FloatRect BEGIN(begin, tileSize);
+	
 	
 	m_sprite.setTexture(m_tileset);
-	m_sprite.setTextureRect(BEGIN);
+	m_sprite.setTextureRect();
 	m_sprite.setPosition(0, 0);
 	m_sprite.getPosition();
 	sf::Vector2f scale = m_sprite.getScale();
 	m_sprite.scale(scale.x * 2, scale.y * 2);
+
+	// resize the vertex array to fit the level size
+	m_vertices.setPrimitiveType(sf::Quads);
+	m_vertices.resize(width * height * 4);
+
+
+	// populate the vertex array, with one quad per title
+	for (unsigned int i = 0; i < width; ++i)
+		for (unsigned int j = 0; j < height; ++j)
+		{
+			// get the current title number
+			int tileNumber = tiles[i + j * width];
+			if (tileNumber != 1)
+				tileNumber = 0;
+
+			m_sprite.setTextureRect(pocz[tileNumber].position, tileSize);
+			m_sprite.setPosition(width*tileSize.x, height * tileSize.y);
+			m_sprite.draw()
+			
+		}
+
 
 
 	//// resize the vertex array to fit the level size
