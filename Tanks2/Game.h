@@ -19,8 +19,5 @@ private:
 	void render();
 
 	sf::RenderWindow* _window = nullptr;
-	//sf::Texture* tankTexture = nullptr;
-	//sf::Sprite *tanksprite = nullptr;
-
 };
 
