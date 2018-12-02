@@ -1,23 +1,24 @@
 #pragma once
-#include <iostream>
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
+
+// Size of window
+// TODO Move to setting.cfg
+#define WIDTH 800
+#define HEIGHT 600
 
 class Game
 {
 public:
 	Game();
 	~Game();
+	
 	void run();
-	void buildMap();
 
 private:
 	void processEvents();
 	void update();
 	void render();
-	
-	sf::RenderWindow window;
-	sf::Texture texture;
-	sf::Sprite mushroom;
-	int windowHeight = 416;
-	int windowWidth = 416;
+
+	sf::RenderWindow _window;
 };
+
