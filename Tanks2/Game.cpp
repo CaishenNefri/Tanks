@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
+#include "Player.h"
 
 
 Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
@@ -13,12 +14,13 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	//Inicjalizacja obiektu
 	m_Rect.setSize({ 64.0f,64.0f });
 	m_Rect.setPosition({ 64.0f, 64.0f });
-	m_Rect.setTexture(ResourceManager::GetInstance()->RequestTexture("tank"));
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
 	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
 	InputManager::GetInstance()->AddAction(Input::Left, sf::Keyboard::Key::Left);
 	InputManager::GetInstance()->AddAction(Input::Right, sf::Keyboard::Key::Right);
+
+	m_pPlayer = new Player();
 }
 
 
@@ -28,6 +30,8 @@ Game::~Game()
 	delete _window;
 	_window = nullptr;
 	ResourceManager::GetInstance()->CleanUp();
+	delete m_pPlayer;
+	m_pPlayer = nullptr;
 	//TODO Add other pointers
 }
 
@@ -78,34 +82,7 @@ bool Game::processEvents()
 
 void Game::update(float deltaTime)
 {
-	// Inicialized loccaly for not typing a lot
-	auto input = InputManager::GetInstance();
-	auto pos = m_Rect.getPosition();
-
-	sf::Vector2<float> velocity;
-	float speed = 200.0f;
-
-	// Sprawdza czy nacisniete klawicze i odpowiednio nadaje kierunek poruszania siê	
-	if (input->IsActionTriggered(Input::Up))
-	{
-		velocity.y = -speed;
-	}
-	if (input->IsActionTriggered(Input::Down))
-	{
-		velocity.y = speed;
-	}
-	if (input->IsActionTriggered(Input::Left))
-	{
-		velocity.x = -speed;
-	}
-	if (input->IsActionTriggered(Input::Right))
-	{
-		velocity.x = speed;
-	}
-
-	pos += velocity * deltaTime;
-	
-	m_Rect.setPosition(pos);
+	m_pPlayer->Update(deltaTime);
 }
 
 void Game::render()
@@ -115,6 +92,8 @@ void Game::render()
 
 	// Draw tht tank
 	_window->draw(m_Rect);
+	// Draw the player
+	m_pPlayer->Draw(_window);
 
 	// End the current frame and display its contents on screen
 	_window->display();

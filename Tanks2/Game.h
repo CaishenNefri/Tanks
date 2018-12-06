@@ -1,6 +1,9 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
+//To can iniclaize Player pointer
+class Player;
+
 // Size of window
 // TODO Move to setting.cfg
 #define WIDTH 800
@@ -21,5 +24,6 @@ private:
 	sf::RenderWindow* _window = nullptr;
 	//Test Resource Manager
 	sf::RectangleShape m_Rect;
-};
 
+	Player* m_pPlayer = nullptr;
+};
