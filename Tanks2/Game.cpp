@@ -40,7 +40,7 @@ Game::~Game()
 void Game::run()
 {
 	sf::Clock clock;
-	float deltaTime{  };
+	float deltaTime{  }; //TODO what the fuck?
 
 	bool isRunning = true;
 	while (isRunning)

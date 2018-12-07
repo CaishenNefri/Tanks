@@ -6,6 +6,7 @@ ResourceManager::ResourceManager()
 {
 	// tank to nazwa, ktora bedzie w m_Textures wskazywac na teksture
 	LoadTexture("Resources/Sprites/git_tank1R.png", "tank");
+	LoadTexture("Resources/Sprites/sprite.png", "sprite");
 }
 
 void ResourceManager::LoadTexture(std::string path, std::string name)

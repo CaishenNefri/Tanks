@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "Player.h"
-#include "InputManager.h"
-#include "ResourceManager.h"
 
 
-Player::Player()
+Player::Player() :
+	m_Anim(6, 2)
 {
 	m_Body.setSize({ 64.0f, 64.0f });
 	m_Body.setPosition(0, 0);
-	m_Body.setTexture(ResourceManager::GetInstance()->RequestTexture("tank"));
+	m_Body.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	m_Body.setTextureRect({ 0,32,16,16 });
 }
 
 
@@ -21,7 +21,7 @@ void Player::Update(float elapsedSec)
 	// Inicialized loccaly for not typing a lot
 	auto input = InputManager::GetInstance();
 	auto pos = m_Body.getPosition();
-
+  
 	sf::Vector2<float> velocity;
 	float speed = 200.0f;
 
@@ -45,10 +45,23 @@ void Player::Update(float elapsedSec)
 
 	pos += velocity * elapsedSec;
 
+	// animacja tylko podczas poruszania
+	if(velocity.x != 0 || velocity.y!= 0)
+		HandleAnimation(elapsedSec);
+
 	m_Body.setPosition(pos);
 }
 
 void Player::Draw(sf::RenderWindow* pWindow)
 {
 	pWindow->draw(m_Body);
+}
+
+void Player::HandleAnimation(float elapsedSec)
+{
+	m_Anim.Update(elapsedSec);
+
+	int currentFrame = m_Anim.GetCurrentFrame();
+
+	m_Body.setTextureRect({ currentFrame * 16, 32, 16,16 });
 }

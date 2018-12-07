@@ -1,5 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "InputManager.h"
+#include "ResourceManager.h"
+#include "Animator.h"
+
 
 class Player
 {
@@ -12,5 +16,10 @@ public:
 private:
 	sf::RectangleShape m_Body;
 
+
+	Animator m_Anim;
+
+
+	void HandleAnimation(float elapsedSec);
 };
 
