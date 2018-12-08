@@ -16,6 +16,12 @@
     <Filter Include="Images">
       <UniqueIdentifier>{57329d1b-bbb5-4ffa-8ec6-e654885d77bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{8c06b1c2-5899-4370-a11b-2a9a43ceb8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Sprites">
+      <UniqueIdentifier>{3d8eed4d-5d2b-48ff-9753-61b65ddd2e22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -34,6 +40,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -61,8 +73,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="sprite.png">
-      <Filter>Images</Filter>
+    <Image Include="Resources\Sprites\sprite.png">
+      <Filter>Resources\Sprites</Filter>
     </Image>
   </ItemGroup>
 </Project>
