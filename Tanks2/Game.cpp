@@ -3,8 +3,25 @@
 #include "ResourceManager.h"
 #include "InputManager.h"
 #include "Player.h"
+#include "Map.h"
 
 
+const int tiles[169] = {
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
+	55, 55, 55, 10, 10, 10, 10, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 10, 10, 10, 55, 22, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 22, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55
+};
+	
 Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
 {
 	//TODO Set timer, not framelock
@@ -21,6 +38,8 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	InputManager::GetInstance()->AddAction(Input::Right, sf::Keyboard::Key::Right);
 
 	m_pPlayer = new Player();
+	
+	map.load(tiles, { 13, 13 }, 16, { 0,0 });
 }
 
 
@@ -90,10 +109,13 @@ void Game::render()
 	// Clear the whole window before rendering a new frame
 	_window->clear();
 
+	_window->draw(map);
+
 	// Draw tht tank
 	_window->draw(m_Rect);
+
 	// Draw the player
-	m_pPlayer->Draw(_window);
+	m_pPlayer->Draw(_window);	
 
 	// End the current frame and display its contents on screen
 	_window->display();

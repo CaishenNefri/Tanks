@@ -1,13 +1,16 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Map.h"
+
 
 //To can iniclaize Player pointer
 class Player;
+//class Map;
 
 // Size of window
 // TODO Move to setting.cfg
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 832
+#define HEIGHT 664
 
 class Game
 {
@@ -26,4 +29,6 @@ private:
 	sf::RectangleShape m_Rect;
 
 	Player* m_pPlayer = nullptr;
+	Map map;
 };
+
