@@ -4,8 +4,7 @@
 Animator::Animator(int framesPerSecond, int amountFrames) :
 	m_FramesPerSecond(framesPerSecond),
 	m_AmountOffFrames(amountFrames - 1)
-{
-}
+{}
 
 Animator::~Animator()
 {
