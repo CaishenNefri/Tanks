@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="Animator.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="CPlayerControl.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="CPhysics.h" />
     <ClInclude Include="CPosition.h" />

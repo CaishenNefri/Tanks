@@ -47,7 +47,6 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	m_Rect.setPosition({ 64.0f, 64.0f });
 
 	sf::Vector2f position{ 50.f, 50.f };
-
 	createTank(position);
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
@@ -122,6 +121,7 @@ void Game::update(float deltaTime)
 	m_pPlayer->Update(deltaTime);
 
 	manager.refresh();
+	manager.update(deltaTime);
 }
 
 void Game::render()
@@ -148,10 +148,12 @@ Entity& Game::createTank(sf::Vector2f& mPosition)
 {
 	sf::Vector2f size{ 64.f, 64.f };
 	auto& entity(manager.addEntity());
+	float speed = 200.f;
 
 	entity.addComponent<CPosition>(mPosition);
 	entity.addComponent<CPhysics>();
 	entity.addComponent<CRectangle>(this, size);
+	entity.addComponent<CPlayerControl>(speed);
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,32,16,16 });
