@@ -1,11 +1,6 @@
 #pragma once
+#include "Components.h"
 #include "SFML/Graphics.hpp"
-#include "Map.h"
-
-
-//To can iniclaize Player pointer
-class Player;
-//class Map;
 
 // Size of window
 // TODO Move to setting.cfg
@@ -18,6 +13,7 @@ public:
 	Game();
 	~Game();
 	void run();
+	void render(const sf::Drawable& mDrawable) { _window->draw(mDrawable); }
 
 private:
 	bool processEvents();
@@ -25,10 +21,7 @@ private:
 	void render();
 
 	sf::RenderWindow* _window = nullptr;
-	//Test Resource Manager
-	sf::RectangleShape m_Rect;
 
-	Player* m_pPlayer = nullptr;
-	Map map;
+	// Factories
+	Entity& createTank(sf::Vector2f& mPosition);
 };
-

@@ -1,9 +1,23 @@
-#include "pch.h"
+//#include "pch.h"
 #include "Game.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
 #include "Player.h"
 #include "Map.h"
+
+Manager manager;
+enum BattleGameGroup : std::size_t
+{
+	GTank
+};
+
+
+//Test Resource Manager
+sf::RectangleShape m_Rect;
+
+Player* m_pPlayer = nullptr;
+Map map;
+
 
 
 const int tiles[169] = {
@@ -31,6 +45,10 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	//Inicjalizacja obiektu
 	m_Rect.setSize({ 64.0f,64.0f });
 	m_Rect.setPosition({ 64.0f, 64.0f });
+
+	sf::Vector2f position{ 50.f, 50.f };
+
+	createTank(position);
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
 	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
@@ -102,6 +120,8 @@ bool Game::processEvents()
 void Game::update(float deltaTime)
 {
 	m_pPlayer->Update(deltaTime);
+
+	manager.refresh();
 }
 
 void Game::render()
@@ -117,12 +137,31 @@ void Game::render()
 	// Draw the player
 	m_pPlayer->Draw(_window);	
 
+	// NEW
+	manager.draw();
+
 	// End the current frame and display its contents on screen
 	_window->display();
 }
 
+Entity& Game::createTank(sf::Vector2f& mPosition)
+{
+	sf::Vector2f size{ 64.f, 64.f };
+	auto& entity(manager.addEntity());
 
+	entity.addComponent<CPosition>(mPosition);
+	entity.addComponent<CPhysics>();
+	entity.addComponent<CRectangle>(this, size);
 
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,32,16,16 });
+
+	entity.addGroup(BattleGameGroup::GTank);
+
+	return entity;
+}
+
+void CRectangle::draw() { game->render(shape); }
 
 /*
 // Deckare and create a new render-window
