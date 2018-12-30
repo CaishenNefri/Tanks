@@ -10,6 +10,8 @@ class CRectangle : public Component
 public:
 	Game* game{ nullptr };
 	CPosition* cPosition{ nullptr };
+	CPhysics* cPhysics{ nullptr };
+
 	sf::RectangleShape shape;
 	sf::Vector2f size;
 
@@ -20,6 +22,7 @@ public:
 	void init() override
 	{
 		cPosition = &entity->getComponent<CPosition>();
+		cPhysics = &entity->getComponent<CPhysics>();
 
 		shape.setSize(size);
 	}

@@ -8,7 +8,8 @@
 Manager manager;
 enum BattleGameGroup : std::size_t
 {
-	GTank
+	GTank,
+	GBonus
 };
 
 
@@ -48,6 +49,8 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 
 	sf::Vector2f position{ 50.f, 50.f };
 	createTank(position);
+	position = sf::Vector2f{ 140.f, 240.f };
+	createBonus(position);
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
 	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
@@ -135,7 +138,7 @@ void Game::render()
 	_window->draw(m_Rect);
 
 	// Draw the player
-	m_pPlayer->Draw(_window);	
+	//m_pPlayer->Draw(_window);	
 
 	// NEW
 	manager.draw();
@@ -153,12 +156,28 @@ Entity& Game::createTank(sf::Vector2f& mPosition)
 	entity.addComponent<CPosition>(mPosition);
 	entity.addComponent<CPhysics>();
 	entity.addComponent<CRectangle>(this, size);
+	entity.addComponent<CAnimation>(9, 2);
 	entity.addComponent<CPlayerControl>(speed);
+	
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11*16,16,16});
+	entity.addGroup(BattleGameGroup::GTank);
+
+	return entity;
+}
+
+Entity& Game::createBonus(sf::Vector2f& mPosition)
+{
+	sf::Vector2f size{ 48.f, 48.f };
+	auto& entity(manager.addEntity());
+
+	entity.addComponent<CPosition>(mPosition);
+	entity.addComponent<CPhysics>();
+	entity.addComponent<CRectangle>(this, size);
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
-	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,32,16,16 });
-
-	entity.addGroup(BattleGameGroup::GTank);
+	entity.getComponent<CRectangle>().shape.setTextureRect({ (16*16)-1,7 * 16,16,16 });
+	entity.addGroup(BattleGameGroup::GBonus);
 
 	return entity;
 }

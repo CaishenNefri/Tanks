@@ -3,11 +3,13 @@
 #include "SFML/Graphics.hpp"
 #include "InputManager.h"
 
+
 class CPlayerControl : public Component
 {
 public:
 	CPhysics* cPhysics{ nullptr };
 	CRectangle* cRectangle{ nullptr };
+	CAnimation* cAnimation{ nullptr };
 	float speed;
 
 	CPlayerControl() = default;
@@ -17,6 +19,7 @@ public:
 	{
 		cPhysics = &entity->getComponent<CPhysics>();
 		cRectangle = &entity->getComponent<CRectangle>();
+		cAnimation = &entity->getComponent<CAnimation>();
 	}
 
 	void update(float mFT) override
@@ -30,6 +33,7 @@ public:
 		{
 			cPhysics->velocity.y = -speed;
 			rect.left = 0;
+			
 		}else
 		if (input->IsActionTriggered(Input::Down))
 		{
@@ -46,6 +50,13 @@ public:
 			cPhysics->velocity.x = speed;
 			rect.left = 16 * 6;
 		}
-		cRectangle->shape.setTextureRect(rect);
+
+		if (cPhysics->velocity.x != 0 || cPhysics->velocity.y !=0)
+		{
+			int frame = cAnimation->m_CurrentFrame;
+			rect.left += 16 * frame;
+			cRectangle->shape.setTextureRect(rect);
+		}
+		
 	}
 };

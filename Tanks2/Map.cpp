@@ -45,10 +45,11 @@ void Map::load(const int *tiles, sf::Vector2u mapSize, unsigned int tileSize, sf
 			quad[3].position = sf::Vector2f(x * 1 * 4 * tileSize, y * 1 * 4 * tileSize + tileSize * 4);
 
 			// define its 4 texture coordinates
+			//tileSize-1 because start from 0
 			quad[0].texCoords = sf::Vector2f(pos.x, pos.y);
-			quad[1].texCoords = sf::Vector2f(pos.x + tileSize, pos.y);
-			quad[2].texCoords = sf::Vector2f(pos.x + tileSize, pos.y + tileSize);
-			quad[3].texCoords = sf::Vector2f(pos.x, pos.y + tileSize);
+			quad[1].texCoords = sf::Vector2f(pos.x + tileSize-1, pos.y);
+			quad[2].texCoords = sf::Vector2f(pos.x + tileSize-1, pos.y + tileSize-1);
+			quad[3].texCoords = sf::Vector2f(pos.x, pos.y + tileSize-1);
 		}
 	}
 }

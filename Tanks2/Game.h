@@ -24,4 +24,5 @@ private:
 
 	// Factories
 	Entity& createTank(sf::Vector2f& mPosition);
+	Entity& createBonus(sf::Vector2f& mPosition);
 };
