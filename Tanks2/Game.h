@@ -1,6 +1,11 @@
 #pragma once
-#include <iostream>
-#include <SFML/Graphics.hpp>
+#include "Components.h"
+#include "SFML/Graphics.hpp"
+
+// Size of window
+// TODO Move to setting.cfg
+#define WIDTH 832
+#define HEIGHT 664
 
 class Game
 {
@@ -8,16 +13,16 @@ public:
 	Game();
 	~Game();
 	void run();
-	void buildMap();
+	void render(const sf::Drawable& mDrawable) { _window->draw(mDrawable); }
 
 private:
-	void processEvents();
-	void update();
+	bool processEvents();
+	void update(float deltaTime);
 	void render();
-	
-	sf::RenderWindow window;
-	sf::Texture texture;
-	sf::Sprite mushroom;
-	int windowHeight = 416;
-	int windowWidth = 416;
+
+	sf::RenderWindow* _window = nullptr;
+
+	// Factories
+	Entity& createTank(sf::Vector2f& mPosition);
+	Entity& createBonus(sf::Vector2f& mPosition);
 };

@@ -1,122 +1,244 @@
-#include "pch.h"
+//#include "pch.h"
 #include "Game.h"
+#include "ResourceManager.h"
+#include "InputManager.h"
+#include "Player.h"
+#include "Map.h"
 
-
-Game::Game() 
+Manager manager;
+enum BattleGameGroup : std::size_t
 {
-	window.create(sf::VideoMode(windowHeight, windowWidth), "Battle Game");
-	window.setVerticalSyncEnabled(true);
-	window.setKeyRepeatEnabled(false);
+	GTank,
+	GBonus
+};
+
+
+//Test Resource Manager
+sf::RectangleShape m_Rect;
+
+Player* m_pPlayer = nullptr;
+Map map;
+
+
+
+const int tiles[169] = {
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
+	55, 55, 55, 10, 10, 10, 10, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 10, 10, 10, 55, 22, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 22, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55
+};
+	
+Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
+{
+	//TODO Set timer, not framelock
+	//_window->setFramerateLimit(60);
+
+
+	//Inicjalizacja obiektu
+	m_Rect.setSize({ 64.0f,64.0f });
+	m_Rect.setPosition({ 64.0f, 64.0f });
+
+	sf::Vector2f position{ 50.f, 50.f };
+	createTank(position);
+	position = sf::Vector2f{ 140.f, 240.f };
+	createBonus(position);
+
+	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
+	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
+	InputManager::GetInstance()->AddAction(Input::Left, sf::Keyboard::Key::Left);
+	InputManager::GetInstance()->AddAction(Input::Right, sf::Keyboard::Key::Right);
+
+	m_pPlayer = new Player();
+	
+	map.load(tiles, { 13, 13 }, 16, { 0,0 });
 }
 
 
 Game::~Game()
 {
-
+	// delete instance, remove memory leak
+	delete _window;
+	_window = nullptr;
+	ResourceManager::GetInstance()->CleanUp();
+	delete m_pPlayer;
+	m_pPlayer = nullptr;
+	//TODO Add other pointers
 }
 
+
+//Does everything below, runs one frame to the next.
 void Game::run()
 {
-	texture.loadFromFile("sprite.png");
-	sf::IntRect rectSourceSprite(16 * 4, 16 * 3, 16, 16);
-	mushroom.setTexture(texture);
-	mushroom.setTextureRect(rectSourceSprite);
-	sf::Vector2f scale = mushroom.getScale();
-	mushroom.setScale(scale.x * 2, scale.y * 2);
-	sf::Vector2u size = texture.getSize();
-	mushroom.setOrigin(0, 0);
+	sf::Clock clock;
+	float deltaTime{  }; //TODO what the fuck?
 
-
-	while (window.isOpen())
+	bool isRunning = true;
+	while (isRunning)
 	{
-		processEvents();
-		update();
+		//calculate time between frames
+		deltaTime = clock.restart().asSeconds();
+
+		//check events
+		isRunning = processEvents();
+		if (!isRunning) return;
+
+		//update
+		update(deltaTime);
+
+		//draw
 		render();
 	}
 }
 
-void Game::buildMap()
+
+// Event processing
+bool Game::processEvents()
 {
-	sf::Texture text;
-	sf::Vector2f scale;
-	text.loadFromFile("sprite.png");
-	sf::IntRect rect(16 * 16, 16 * 0, 16, 16);
-	sf::Sprite wall(text, rect);
-	scale = wall.getScale();
-	wall.setScale(scale.x * 2, scale.y * 2);
-}
-
-void Game::processEvents()
-{
-	////sf::Texture texture;
-	//texture.loadFromFile("tank.png");
-
-	////int d = 16;
-	//sf::IntRect rectSourceSprite(0,0,16,16);
-	//mushroom(texture, rectSourceSprite);
-
-	////sf::Texture mushroomTexture;
-	////mushroomTexture.loadFromFile("tank.png");
-	////sf::Sprite mushroom(mushroomTexture);
-	////sf::Sprite mushroom = sprite;
-	//sf::Vector2f scale = mushroom.getScale();
-	//mushroom.setScale(scale.x * 10, scale.y * 10);
-
-	////sf::Vector2u size = mushroomTexture.getSize();
-	//mushroom.setOrigin(size.x / 10, size.y / 10);
-	//sf::Vector2f increment(0.4f, 0.4f);
-
-
 	sf::Event event;
-	while (window.pollEvent(event))
+	while (_window->pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
-			window.close();
+		// Request for closing the window
+		switch(event.type)
+		{
+			case sf::Event::Closed:
+				_window->close();
+				return false;
+				break;
+		}
 	}
+
+	return true;
 }
 
-void Game::update()
+void Game::update(float deltaTime)
 {
-	sf::Vector2f position = mushroom.getPosition();
-	int distance = 2;
+	m_pPlayer->Update(deltaTime);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		sf::Vector2f move(distance, 0);
-		mushroom.setPosition(position + move);
-		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		sf::Vector2f move(0, distance);
-		mushroom.setPosition(position - move);
-		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		sf::Vector2f move(0, distance);
-		mushroom.setPosition(position + move);
-		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		sf::Vector2f move(distance, 0);
-		mushroom.setPosition(position - move);
-		std::cout << "Przycisk Prawa strzalka nacisniety!" << std::endl;
-	}
-
-
+	manager.refresh();
+	manager.update(deltaTime);
 }
 
 void Game::render()
 {
-	window.clear(sf::Color(16, 16, 16, 255)); // Dark gray.
-	window.draw(mushroom); // Drawing our sprite.
-	window.display();
+	// Clear the whole window before rendering a new frame
+	_window->clear();
 
+	_window->draw(map);
 
-	/*window.clear();
-	window.draw();
-	window.display();*/
+	// Draw tht tank
+	_window->draw(m_Rect);
+
+	// Draw the player
+	//m_pPlayer->Draw(_window);	
+
+	// NEW
+	manager.draw();
+
+	// End the current frame and display its contents on screen
+	_window->display();
 }
+
+Entity& Game::createTank(sf::Vector2f& mPosition)
+{
+	sf::Vector2f size{ 64.f, 64.f };
+	auto& entity(manager.addEntity());
+	float speed = 200.f;
+
+	entity.addComponent<CPosition>(mPosition);
+	entity.addComponent<CPhysics>();
+	entity.addComponent<CRectangle>(this, size);
+	entity.addComponent<CAnimation>(9, 2);
+	entity.addComponent<CPlayerControl>(speed);
+	
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11*16,16,16});
+	entity.addGroup(BattleGameGroup::GTank);
+
+	return entity;
+}
+
+Entity& Game::createBonus(sf::Vector2f& mPosition)
+{
+	sf::Vector2f size{ 48.f, 48.f };
+	auto& entity(manager.addEntity());
+
+	entity.addComponent<CPosition>(mPosition);
+	entity.addComponent<CPhysics>();
+	entity.addComponent<CRectangle>(this, size);
+
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	entity.getComponent<CRectangle>().shape.setTextureRect({ (16*16)-1,7 * 16,16,16 });
+	entity.addGroup(BattleGameGroup::GBonus);
+
+	return entity;
+}
+
+void CRectangle::draw() { game->render(shape); }
+
+/*
+// Deckare and create a new render-window
+	sf::RenderWindow _window(sf::VideoMode(800, 600), "SFML window");
+
+	// Limit the framerate to 60 frames per second.
+	//TODO It will change to response on time
+	_window.setFramerateLimit(60);
+
+	// Create tank
+	// Load texture for tank
+	sf::Texture tankTexture;
+	if (!tankTexture.loadFromFile("sprite.png"))
+		return -1;
+
+	// Assign textureTank to Sprite
+	sf::Sprite tankSprite(tankTexture);
+
+	// set tank position and size
+	sf::Vector2i tank1Position(0, 0);
+	sf::Vector2i tankSize(16, 16);
+	sf::IntRect tank1(tank1Position, tankSize);
+
+	// choose first tank, change rectangle of texture in sprite
+	tankSprite.setTextureRect(tank1);
+
+	// change scale of displayed tank
+	sf::Vector2f tankScale(2, 2);
+	tankSprite.scale(tankScale);
+
+
+
+
+
+
+	// The main loop - end as suun as the window is closed
+	while (_window.isOpen())
+	{
+		// Event processing
+		sf::Event event;
+		while (_window.pollEvent(event))
+		{
+			// Request for closing the window
+			if (event.type == sf::Event::Closed)
+				_window.close();
+		}
+
+		// Clear the whole window before rendering a new frame
+		_window.clear();
+
+		// Draw tht tank
+		_window.draw(tankSprite);
+
+		// End the current frame and display its contents on screen
+		_window.display();
+	}
+
+
+*/
