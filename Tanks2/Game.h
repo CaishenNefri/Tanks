@@ -23,6 +23,9 @@ private:
 	sf::RenderWindow* _window = nullptr;
 
 	// Factories
-	Entity& createTank(sf::Vector2f& mPosition);
+	/*Entity& createTank(sf::Vector2f& mPosition);*/
 	Entity& createBonus(sf::Vector2f& mPosition);
+
+	void createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
+	void createBonus2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
 };

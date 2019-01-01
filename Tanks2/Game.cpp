@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "Player.h"
 #include "Map.h"
+#include "Collision.h"
 
 Manager manager;
 enum BattleGameGroup : std::size_t
@@ -19,7 +20,7 @@ sf::RectangleShape m_Rect;
 Player* m_pPlayer = nullptr;
 Map map;
 
-
+auto& player(manager.addEntity());
 
 const int tiles[169] = {
 	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
@@ -39,17 +40,18 @@ const int tiles[169] = {
 	
 Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
 {
-	//TODO Set timer, not framelock
 	//_window->setFramerateLimit(60);
-
 
 	//Inicjalizacja obiektu
 	m_Rect.setSize({ 64.0f,64.0f });
 	m_Rect.setPosition({ 64.0f, 64.0f });
 
 	sf::Vector2f position{ 50.f, 50.f };
-	createTank(position);
+	//createTank(position);
+	createTank2(player, position, "player");
 	position = sf::Vector2f{ 140.f, 240.f };
+	createBonus(position);
+	position = sf::Vector2f{ 340.f, 340.f };
 	createBonus(position);
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
@@ -125,6 +127,20 @@ void Game::update(float deltaTime)
 
 	manager.refresh();
 	manager.update(deltaTime);
+
+	auto& bonuses(manager.getEntitiesByGroup(GBonus));
+
+	for (auto& b : bonuses)
+	{
+		Collision::colissionPlayer(player, *b);
+	}
+	/*if (player.getComponent<CRectangle>().shape.getGlobalBounds().intersects(
+		bonus.getComponent<CRectangle>().shape.getGlobalBounds()
+	))
+	{
+		std::cout << "Intersect\n";
+	}
+	else std::cout << "NOT\n";*/
 }
 
 void Game::render()
@@ -147,24 +163,24 @@ void Game::render()
 	_window->display();
 }
 
-Entity& Game::createTank(sf::Vector2f& mPosition)
-{
-	sf::Vector2f size{ 64.f, 64.f };
-	auto& entity(manager.addEntity());
-	float speed = 200.f;
-
-	entity.addComponent<CPosition>(mPosition);
-	entity.addComponent<CPhysics>();
-	entity.addComponent<CRectangle>(this, size);
-	entity.addComponent<CAnimation>(9, 2);
-	entity.addComponent<CPlayerControl>(speed);
-	
-	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
-	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11*16,16,16});
-	entity.addGroup(BattleGameGroup::GTank);
-
-	return entity;
-}
+//Entity& Game::createTank(sf::Vector2f& mPosition)
+//{
+//	sf::Vector2f size{ 64.f, 64.f };
+//	auto& entity(manager.addEntity());
+//	float speed = 200.f;
+//
+//	entity.addComponent<CPosition>(mPosition);
+//	entity.addComponent<CPhysics>();
+//	entity.addComponent<CRectangle>(this, size);
+//	entity.addComponent<CAnimation>(9, 2);
+//	entity.addComponent<CPlayerControl>(speed);
+//	
+//	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+//	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11*16,16,16});
+//	entity.addGroup(BattleGameGroup::GTank);
+//
+//	return entity;
+//}
 
 Entity& Game::createBonus(sf::Vector2f& mPosition)
 {
@@ -182,7 +198,43 @@ Entity& Game::createBonus(sf::Vector2f& mPosition)
 	return entity;
 }
 
+void Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag)
+{
+	sf::Vector2f size{ 64.f, 64.f };
+	float speed = 200.f;
+
+	entity.addComponent<CPosition>(mPosition);
+	entity.addComponent<CPhysics>();
+	entity.addComponent<CRectangle>(this, size, mTag);
+	entity.addComponent<CAnimation>(9, 2);
+	entity.addComponent<CPlayerControl>(speed);
+	entity.addComponent<CTank>();
+
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,16,16 });
+	entity.addGroup(BattleGameGroup::GTank);
+}
+
+void Game::createBonus2(Entity& entity,sf::Vector2f& mPosition, std::string mTag)
+{
+	sf::Vector2f size{ 48.f, 48.f };
+
+	entity.addComponent<CPosition>(mPosition);
+	entity.addComponent<CPhysics>();
+	entity.addComponent<CRectangle>(this, size, mTag);
+
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	entity.getComponent<CRectangle>().shape.setTextureRect({ (16 * 21) - 1,7 * 16,16,16 });
+	entity.addGroup(BattleGameGroup::GBonus);
+}
+
 void CRectangle::draw() { game->render(shape); }
+void CTank::upgrade(void)
+{
+	sf::IntRect rect = cRectangle->shape.getTextureRect();
+	rect.top += 16;
+	cRectangle->shape.setTextureRect(rect);
+}
 
 /*
 // Deckare and create a new render-window
