@@ -229,12 +229,6 @@ void Game::createBonus2(Entity& entity,sf::Vector2f& mPosition, std::string mTag
 }
 
 void CRectangle::draw() { game->render(shape); }
-void CTank::upgrade(void)
-{
-	sf::IntRect rect = cRectangle->shape.getTextureRect();
-	rect.top += 16;
-	cRectangle->shape.setTextureRect(rect);
-}
 
 /*
 // Deckare and create a new render-window
