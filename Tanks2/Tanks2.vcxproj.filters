@@ -69,6 +69,9 @@
     <ClInclude Include="CTank.h">
       <Filter>Header Files\ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="MapManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CTank.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MapManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

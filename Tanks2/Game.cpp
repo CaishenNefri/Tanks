@@ -4,13 +4,17 @@
 #include "InputManager.h"
 #include "Player.h"
 #include "Map.h"
+#include "MapManager.h"
 #include "Collision.h"
 
 Manager manager;
 enum BattleGameGroup : std::size_t
 {
+
+	GTile,
 	GTank,
 	GBonus
+	//GTile
 };
 
 
@@ -18,7 +22,8 @@ enum BattleGameGroup : std::size_t
 sf::RectangleShape m_Rect;
 
 Player* m_pPlayer = nullptr;
-Map map;
+//Map map;
+MapManager map;
 
 auto& player(manager.addEntity());
 
@@ -61,7 +66,8 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 
 	m_pPlayer = new Player();
 	
-	map.load(tiles, { 13, 13 }, 16, { 0,0 });
+	//map.load(tiles, { 13, 13 }, 16, { 0,0 });
+	map.load(this, tiles, manager, BattleGameGroup::GTile);
 }
 
 
@@ -148,7 +154,8 @@ void Game::render()
 	// Clear the whole window before rendering a new frame
 	_window->clear();
 
-	_window->draw(map);
+	//_window->draw(map);
+	//map.load(, tiles, manager, BattleGameGroup::GTile);
 
 	// Draw tht tank
 	_window->draw(m_Rect);
