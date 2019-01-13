@@ -1,15 +1,16 @@
 #pragma once
 #include "Components.h"
-#include "SFML/Graphics.hpp"
 
 class CPhysics : public Component
 {
 public:
 	CPosition* cPosition{ nullptr };
 	sf::Vector2f velocity, size;
+	float speed;
 
 	CPhysics() = default;
 	CPhysics(const sf::Vector2f& mSize) : size{ mSize } {}
+	CPhysics(const sf::Vector2f& mSize, float mSpeed) : size{ mSize }, speed{ mSpeed } {}
 
 
 	void init() override

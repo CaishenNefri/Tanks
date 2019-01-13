@@ -15,6 +15,13 @@ public:
 	void run();
 	void render(const sf::Drawable& mDrawable) { _window->draw(mDrawable); }
 
+	enum BattleGameGroup : std::size_t
+	{
+		GTank,
+		GBonus,
+		GTile
+	};
+
 private:
 	bool processEvents();
 	void update(float deltaTime);
@@ -26,6 +33,6 @@ private:
 	/*Entity& createTank(sf::Vector2f& mPosition);*/
 	Entity& createBonus(sf::Vector2f& mPosition);
 
-	void createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
+	Entity& createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
 	void createBonus2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
 };

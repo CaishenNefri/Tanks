@@ -61,8 +61,8 @@ Entity & MapManager::createTile(Game * game, Manager & manager, sf::Vector2f & p
 	auto& entity(manager.addEntity());
 	
 	entity.addComponent<CPosition>(position);
-	entity.addComponent<CPhysics>();
-	entity.addComponent<CRectangle>(game, tile.getSize());
+	entity.addComponent<CPhysics>(tile.getSize());
+	entity.addComponent<CRectangle>(game);
 	
 	entity.getComponent<CRectangle>().shape = tile;
 	entity.addGroup(group);

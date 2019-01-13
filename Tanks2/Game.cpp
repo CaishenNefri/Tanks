@@ -8,20 +8,7 @@
 #include "Collision.h"
 
 Manager manager;
-enum BattleGameGroup : std::size_t
-{
 
-	GTile,
-	GTank,
-	GBonus
-	//GTile
-};
-
-
-//Test Resource Manager
-sf::RectangleShape m_Rect;
-
-Player* m_pPlayer = nullptr;
 //Map map;
 MapManager map;
 
@@ -47,12 +34,7 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 {
 	//_window->setFramerateLimit(60);
 
-	//Inicjalizacja obiektu
-	m_Rect.setSize({ 64.0f,64.0f });
-	m_Rect.setPosition({ 64.0f, 64.0f });
-
 	sf::Vector2f position{ 50.f, 50.f };
-	//createTank(position);
 	createTank2(player, position, "player");
 	position = sf::Vector2f{ 140.f, 240.f };
 	createBonus(position);
@@ -63,8 +45,7 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
 	InputManager::GetInstance()->AddAction(Input::Left, sf::Keyboard::Key::Left);
 	InputManager::GetInstance()->AddAction(Input::Right, sf::Keyboard::Key::Right);
-
-	m_pPlayer = new Player();
+	InputManager::GetInstance()->AddAction(Input::Shoot, sf::Keyboard::Key::X);
 	
 	//map.load(tiles, { 13, 13 }, 16, { 0,0 });
 	map.load(this, tiles, manager, BattleGameGroup::GTile);
@@ -77,8 +58,6 @@ Game::~Game()
 	delete _window;
 	_window = nullptr;
 	ResourceManager::GetInstance()->CleanUp();
-	delete m_pPlayer;
-	m_pPlayer = nullptr;
 	//TODO Add other pointers
 }
 
@@ -129,10 +108,23 @@ bool Game::processEvents()
 
 void Game::update(float deltaTime)
 {
-	m_pPlayer->Update(deltaTime);
+	auto playerPos = player.getComponent<CPosition>().position;
+	auto playerVel = player.getComponent<CPhysics>().velocity;
 
 	manager.refresh();
 	manager.update(deltaTime);
+
+
+	//Test collision with MAP
+	auto& tilesEntity(manager.getEntitiesByGroup(GTile));
+	for (auto& t : tilesEntity)
+	{
+		if (Collision::AABB(player.getComponent <CRectangle>(),
+			t->getComponent<CRectangle>()))
+		{
+			player.getComponent<CPosition>().position = playerPos;
+		}
+	}
 
 	auto& bonuses(manager.getEntitiesByGroup(GBonus));
 
@@ -140,13 +132,6 @@ void Game::update(float deltaTime)
 	{
 		Collision::colissionPlayer(player, *b);
 	}
-	/*if (player.getComponent<CRectangle>().shape.getGlobalBounds().intersects(
-		bonus.getComponent<CRectangle>().shape.getGlobalBounds()
-	))
-	{
-		std::cout << "Intersect\n";
-	}
-	else std::cout << "NOT\n";*/
 }
 
 void Game::render()
@@ -157,13 +142,6 @@ void Game::render()
 	//_window->draw(map);
 	//map.load(, tiles, manager, BattleGameGroup::GTile);
 
-	// Draw tht tank
-	_window->draw(m_Rect);
-
-	// Draw the player
-	//m_pPlayer->Draw(_window);	
-
-	// NEW
 	manager.draw();
 
 	// End the current frame and display its contents on screen
@@ -205,21 +183,23 @@ Entity& Game::createBonus(sf::Vector2f& mPosition)
 	return entity;
 }
 
-void Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag)
+Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag)
 {
-	sf::Vector2f size{ 64.f, 64.f };
+	sf::Vector2f size{ 55.f, 55.f };
 	float speed = 200.f;
 
 	entity.addComponent<CPosition>(mPosition);
-	entity.addComponent<CPhysics>();
+	entity.addComponent<CPhysics>(size, speed);
 	entity.addComponent<CRectangle>(this, size, mTag);
 	entity.addComponent<CAnimation>(9, 2);
-	entity.addComponent<CPlayerControl>(speed);
 	entity.addComponent<CTank>();
+	entity.addComponent<CPlayerControl>();
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
-	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,16,16 });
+	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,15,15 });
 	entity.addGroup(BattleGameGroup::GTank);
+
+	return entity;
 }
 
 void Game::createBonus2(Entity& entity,sf::Vector2f& mPosition, std::string mTag)

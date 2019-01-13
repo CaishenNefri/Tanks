@@ -3,12 +3,13 @@
 #include <map>
 
 // Enumartion for AddAction
-enum Input
+enum Input : unsigned int
 {
 	Up,
 	Down,
 	Left,
 	Right,
+	Shoot
 };
 
 

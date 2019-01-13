@@ -7,9 +7,16 @@ void Collision::colissionPlayer(Entity & a, Entity & b)
 		b.getComponent<CRectangle>().shape.getGlobalBounds()
 	))
 	{
-		std::cout << "Intersect\n";
 		a.getComponent<CTank>().upgrade();
 		b.destroy();
 	}
-	else std::cout << "NOT\n";
+}
+
+bool Collision::AABB(const CRectangle & colA, const CRectangle & colB)
+{
+	if (colA.shape.getGlobalBounds().intersects(
+		colB.shape.getGlobalBounds()
+	))
+		return true;
+	else return false;
 }

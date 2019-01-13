@@ -17,6 +17,10 @@ public:
 	sf::Vector2f size;
 	std::string tag;
 
+	CRectangle(Game* mGame)
+		: game{ mGame }
+	{}
+
 	CRectangle(Game* mGame, const sf::Vector2f& mSize)
 		: game{ mGame }, size{ mSize }
 	{}
