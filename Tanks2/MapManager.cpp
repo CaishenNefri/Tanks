@@ -51,18 +51,35 @@ void MapManager::load(Game * game, const int *tiles, Manager & manager, const st
 				sf::Vector2f position{ (float)positionI.x, (float)positionI.y };
 				tileR.setPosition(position);
 
-				createTile(game, manager, position, tileR, group);
+				std::size_t tileType = selectTagTile(tiles[act]);
+				createTile(game, manager, position, tileR, group, tileType);
 			}
 		}
 }
 
-Entity & MapManager::createTile(Game * game, Manager & manager, sf::Vector2f & position, sf::RectangleShape tile, const std::size_t group)
+std::size_t MapManager::selectTagTile(const int type)
+{
+	if (type == 21)
+		return TForest;
+	if (type == 30)
+		return TWater;
+	if (type == 00)
+		return TBrick;
+	if (type == 22)
+		return TRoad;
+	if (type == 10)
+		return TSteel;
+	
+	return TNull;
+}
+
+Entity & MapManager::createTile(Game * game, Manager & manager, sf::Vector2f & position, sf::RectangleShape tile, const std::size_t group, std::size_t tagTile)
 {
 	auto& entity(manager.addEntity());
 	
 	entity.addComponent<CPosition>(position);
 	entity.addComponent<CPhysics>(tile.getSize());
-	entity.addComponent<CRectangle>(game);
+	entity.addComponent<CRectangle>(game, tagTile);
 	
 	entity.getComponent<CRectangle>().shape = tile;
 	entity.addGroup(group);

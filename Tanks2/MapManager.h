@@ -7,6 +7,16 @@ class Manager;
 class Entity;
 class Game;
 
+enum tileType : std::size_t
+{
+	TBrick,
+	TSteel,
+	TWater,
+	TForest,
+	TRoad,
+	TNull
+};
+
 class MapManager
 {
 public:
@@ -21,6 +31,7 @@ private:
 	int m_Scale;
 	//sf::Vector2i m_BeginTile;
 
-	Entity& createTile(Game * game, Manager & manager, sf::Vector2f & position, sf::RectangleShape tile, const std::size_t group);
+	std::size_t selectTagTile(const int type);
+	Entity& createTile(Game * game, Manager & manager, sf::Vector2f & position, sf::RectangleShape tile, const std::size_t group, std::size_t tagTile);
 };
 

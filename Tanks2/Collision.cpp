@@ -19,12 +19,18 @@ void Collision::colissionPlayer(Entity & a, Entity & b)
 bool Collision::AABB(const CRectangle & colA, const CRectangle & colB)
 {
 	if (colA.shape.getGlobalBounds().intersects(
-		colB.shape.getGlobalBounds()) ||
-		//Collision with window bounds
-		(colA.cPosition->position.y <= 0.f ||
-			(colA.cPosition->position.y + colA.shape.getSize().y) >= windowRect.height) ||
+		colB.shape.getGlobalBounds()))
+		return true;
+	else return false;
+}
+
+bool Collision::ColWindow(const CRectangle & colA)
+{
+	//Collision with window bounds
+	if ((colA.cPosition->position.y <= 0.f ||
+		(colA.cPosition->position.y + colA.shape.getSize().y) >= windowRect.height) ||
 		(colA.cPosition->position.x <= 0.f ||
-			(colA.cPosition->position.x + colA.shape.getSize().x) >= windowRect.width))
+		(colA.cPosition->position.x + colA.shape.getSize().x) >= windowRect.width))
 		return true;
 	else return false;
 }

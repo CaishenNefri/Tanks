@@ -21,8 +21,6 @@ public:
 	void update(float mFT) override
 	{
 		cPosition->position += velocity * mFT;
-
-		// test colision
 	}
 
 

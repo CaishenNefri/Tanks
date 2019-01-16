@@ -34,7 +34,7 @@ const int tiles[169] = {
 	
 Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
 {
-	//_window->setFramerateLimit(60);
+	_window->setFramerateLimit(60);
 
 	sf::Vector2f position{ 50.f, 50.f };
 	createTank2(player, position, "player");
@@ -122,7 +122,8 @@ void Game::update(float deltaTime)
 	for (auto& t : tilesEntity)
 	{
 		if (Collision::AABB(player.getComponent <CRectangle>(),
-			t->getComponent<CRectangle>()))
+			t->getComponent<CRectangle>()) ||
+			Collision::ColWindow(player.getComponent<CRectangle>()))
 		{
 			player.getComponent<CPosition>().position = playerPos;
 		}
@@ -146,9 +147,12 @@ void Game::update(float deltaTime)
 	for (auto& b : bullets)
 	for(auto& t : tilesEntity)
 	{
+		auto tileTag = t->getComponent<CRectangle>().TAG;
+		if(!(tileTag == TWater || tileTag == TForest || tileTag == TRoad))
 		if (Collision::AABB(b->getComponent<CRectangle>(), t->getComponent<CRectangle>()))
 		{
 			b->destroy();
+			if(!(Collision::ColWindow(b->getComponent<CRectangle>())))
 			t->destroy();
 		}
 	}
@@ -193,8 +197,8 @@ Entity& Game::createBonus(sf::Vector2f& mPosition)
 	auto& entity(manager.addEntity());
 
 	entity.addComponent<CPosition>(mPosition);
-	entity.addComponent<CPhysics>();
-	entity.addComponent<CRectangle>(this, size);
+	entity.addComponent<CPhysics>(size);
+	entity.addComponent<CRectangle>(this);
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	entity.getComponent<CRectangle>().shape.setTextureRect({ (16*16)-1,7 * 16,16,16 });
@@ -210,7 +214,7 @@ Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::string m
 
 	entity.addComponent<CPosition>(mPosition);
 	entity.addComponent<CPhysics>(size, speed);
-	entity.addComponent<CRectangle>(this, size, mTag);
+	entity.addComponent<CRectangle>(this);
 	entity.addComponent<CAnimation>(9, 2);
 	entity.addComponent<CBulet>();
 	entity.addComponent<CTank>();
@@ -229,8 +233,8 @@ void Game::createBonus2(Entity& entity,sf::Vector2f& mPosition, std::string mTag
 	sf::Vector2f size{ 48.f, 48.f };
 
 	entity.addComponent<CPosition>(mPosition);
-	entity.addComponent<CPhysics>();
-	entity.addComponent<CRectangle>(this, size, mTag);
+	entity.addComponent<CPhysics>(size);
+	entity.addComponent<CRectangle>(this);
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	entity.getComponent<CRectangle>().shape.setTextureRect({ (16 * 21) - 1,7 * 16,16,16 });
