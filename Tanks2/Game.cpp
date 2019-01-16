@@ -147,13 +147,15 @@ void Game::update(float deltaTime)
 	for (auto& b : bullets)
 	for(auto& t : tilesEntity)
 	{
+		auto tRect = t->getComponent<CRectangle>();
+		auto bRect = b->getComponent<CRectangle>();
 		auto tileTag = t->getComponent<CRectangle>().TAG;
 		if(!(tileTag == TWater || tileTag == TForest || tileTag == TRoad))
-		if (Collision::AABB(b->getComponent<CRectangle>(), t->getComponent<CRectangle>()))
+		if (Collision::AABB(bRect, tRect))
 		{
 			b->destroy();
-			if(!(Collision::ColWindow(b->getComponent<CRectangle>())))
-			t->destroy();
+			if(!(Collision::ColWindow(bRect)))
+				t->destroy();
 		}
 	}
 }
