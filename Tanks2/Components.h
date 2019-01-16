@@ -6,4 +6,5 @@
 #include "CRectangle.h"
 #include "CAnimation.h"
 #include "CTank.h"
+#include "CBulet.h"
 #include "CPlayerControl.h"

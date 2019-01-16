@@ -1,12 +1,15 @@
 #include "CPlayerControl.h"
 #include "InputManager.h"
+#include <ctime>
+
+auto input = InputManager::GetInstance();
 
 void CPlayerControl::update(float mFT)
 {
 	cPhysics->velocity = { 0.f, 0.f };
 	float speed = cPhysics->speed;
 	sf::IntRect rect = cRectangle->shape.getTextureRect();
-	auto input = InputManager::GetInstance();
+	//auto input = InputManager::GetInstance();
 
 	// Sprawdza czy nacisniete klawicze i odpowiednio nadaje kierunek poruszania siê	
 	if (input->IsActionTriggered(Input::Up))
@@ -36,7 +39,12 @@ void CPlayerControl::update(float mFT)
 	//shooting
 	if (input->IsActionTriggered(Input::Shoot))
 	{
-		//std::cout << "STRELAJ\n";1
+		if (!cBulet->key)
+		{
+			cBulet->key = true;
+			cBulet->shooting = true;
+		}
+			
 	}
 
 

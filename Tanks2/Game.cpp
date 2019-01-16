@@ -7,6 +7,8 @@
 #include "MapManager.h"
 #include "Collision.h"
 
+#include "ShootingManager.h"
+
 Manager manager;
 
 //Map map;
@@ -126,11 +128,29 @@ void Game::update(float deltaTime)
 		}
 	}
 
-	auto& bonuses(manager.getEntitiesByGroup(GBonus));
+	
 
+	auto& bonuses(manager.getEntitiesByGroup(GBonus));
 	for (auto& b : bonuses)
 	{
 		Collision::colissionPlayer(player, *b);
+	}
+
+	
+
+	if (ShootingManager::shooting(player.getComponent<CBulet>()))
+	{
+		ShootingManager::createBulet(this, manager, player, GBullet);
+	}
+	auto& bullets(manager.getEntitiesByGroup(GBullet));
+	for (auto& b : bullets)
+	for(auto& t : tilesEntity)
+	{
+		if (Collision::AABB(b->getComponent<CRectangle>(), t->getComponent<CRectangle>()))
+		{
+			b->destroy();
+			t->destroy();
+		}
 	}
 }
 
@@ -192,8 +212,10 @@ Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::string m
 	entity.addComponent<CPhysics>(size, speed);
 	entity.addComponent<CRectangle>(this, size, mTag);
 	entity.addComponent<CAnimation>(9, 2);
+	entity.addComponent<CBulet>();
 	entity.addComponent<CTank>();
-	entity.addComponent<CPlayerControl>();
+	entity.addComponent<CPlayerControl>(_window);
+	
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,15,15 });

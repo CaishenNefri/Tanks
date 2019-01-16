@@ -19,7 +19,8 @@ public:
 	{
 		GTank,
 		GBonus,
-		GTile
+		GTile,
+		GBullet
 	};
 
 private:

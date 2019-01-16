@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="Animator.h" />
     <ClInclude Include="CAnimation.h" />
+    <ClInclude Include="CBulet.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="CPlayerControl.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="ShootingManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animator.cpp" />
@@ -197,6 +199,7 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ShootingManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Sprites\sprite.png" />
