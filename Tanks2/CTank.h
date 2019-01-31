@@ -1,7 +1,8 @@
 #pragma once
 #include "Components.h"
 
-enum TTank {
+enum TTank : std::size_t
+{
 	Player1,
 	Player2,
 	Enemy
@@ -16,6 +17,10 @@ public:
 	CRectangle* cRectangle{nullptr};
 
 	CTank() = default;
+	CTank(std::size_t mTag) : tag(mTag)
+	{}
+
+	std::size_t tag;
 
 	void init() override
 	{

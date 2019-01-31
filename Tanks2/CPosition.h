@@ -5,6 +5,7 @@ class CPosition : public Component
 {
 public:
 	sf::Vector2f position;
+	sf::Vector2i mapPos;
 
 	CPosition() = default;
 	CPosition(const sf::Vector2f& mPosition) : position{ mPosition } {}

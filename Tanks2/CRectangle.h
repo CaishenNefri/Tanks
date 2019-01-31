@@ -44,6 +44,9 @@ public:
 	void update(float mFT) override
 	{
 		shape.setPosition(cPosition->position);
+		sf::FloatRect rect = shape.getGlobalBounds();
+		cPosition->mapPos.x = (int)(rect.left + (rect.width / 2))/64;
+		cPosition->mapPos.y = (int)(rect.top + (rect.height / 2))/64;
 	}
 	void draw() override;
 };

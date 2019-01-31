@@ -2,7 +2,7 @@
 #include "Components.h"
 #include "SFML/Graphics.hpp"
 
-sf::FloatRect Collision::windowRect = sf::FloatRect{ 0.f, 0.f, 832.f, 664.f };
+sf::FloatRect Collision::windowRect = sf::FloatRect{ 0.f, 0.f, 832.f, 832.f };
 
 void Collision::colissionPlayer(Entity & a, Entity & b)
 {

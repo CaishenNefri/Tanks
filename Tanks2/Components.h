@@ -7,4 +7,5 @@
 #include "CAnimation.h"
 #include "CTank.h"
 #include "CBulet.h"
+#include "CControl.h"
 #include "CPlayerControl.h"

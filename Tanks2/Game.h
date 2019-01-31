@@ -5,7 +5,7 @@
 // Size of window
 // TODO Move to setting.cfg
 #define WIDTH 832
-#define HEIGHT 664
+#define HEIGHT 832
 
 class Game
 {
@@ -18,6 +18,7 @@ public:
 	enum BattleGameGroup : std::size_t
 	{
 		GTank,
+		GEnemy,
 		GBonus,
 		GTile,
 		GBullet
@@ -34,6 +35,6 @@ private:
 	/*Entity& createTank(sf::Vector2f& mPosition);*/
 	Entity& createBonus(sf::Vector2f& mPosition);
 
-	Entity& createTank2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
+	Entity& createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t mTag);
 	void createBonus2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
 };
