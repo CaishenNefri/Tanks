@@ -15,36 +15,58 @@ Manager manager;
 MapManager map;
 
 auto& player(manager.addEntity());
-auto& ENEMY(manager.addEntity());
+//auto& ENEMY(manager.addEntity());
 
 const int tiles[169] = {
-	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
-	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
-	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
-	55, 55, 55, 10, 10, 10, 10, 55, 55, 55, 55, 55, 55,
-	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
-	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
-	55, 55, 55, 10, 10, 10, 10, 55, 22, 55, 55, 55, 55,
-	55, 55, 55, 10, 55, 55, 55, 55, 22, 55, 55, 55, 55,
-	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
-	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
-	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
-	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
-	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55
+	55, 55, 10, 55, 55, 55, 55, 10, 55, 55, 55, 55, 55,
+	55, 00, 10, 55, 55, 55, 55, 10, 21, 55, 55, 55, 55,
+	30, 00, 55, 10, 10, 55, 10, 10, 22, 55, 55, 00, 00,
+	30, 55, 00, 55, 55, 55, 55, 10, 21, 55, 55, 55, 55,
+	30, 55, 00, 55, 55, 55, 10, 10, 10, 10, 10, 10, 55,
+	30, 10, 10, 10, 30, 55, 10, 10, 55, 55, 55, 55, 55,
+	30, 55, 10, 10, 30, 55, 10, 55, 55, 10, 10, 10, 55,
+	30, 55, 00, 10, 55, 55, 10, 55, 22, 55, 55, 55, 55,
+	30, 55, 00, 10, 55, 55, 10, 55, 00, 55, 55, 55, 55,
+	30, 55, 00, 10, 55, 55, 10, 55, 55, 55, 55, 55, 55,
+	30, 55, 00, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+	30, 55, 55, 10, 55, 10, 10, 10, 55, 55, 55, 55, 55,
+	30, 55, 00, 55, 55, 10, 23, 10, 55, 55, 55, 55, 55
 };
+
+//const int tiles[169] = {
+//	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+//	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
+//	55, 55, 55, 55, 55, 55, 55, 55, 21, 55, 55, 55, 55,
+//	55, 55, 55, 10, 10, 10, 10, 55, 55, 55, 55, 55, 55,
+//	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
+//	55, 55, 55, 10, 30, 30, 10, 55, 55, 55, 55, 55, 55,
+//	55, 55, 55, 10, 10, 10, 10, 55, 22, 55, 55, 55, 55,
+//	55, 55, 55, 10, 55, 55, 55, 55, 22, 55, 55, 55, 55,
+//	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+//	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+//	55, 55, 55, 10, 55, 55, 55, 55, 00, 55, 55, 55, 55,
+//	55, 55, 55, 10, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+//	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55
+//};
 	
 Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battle Game"))
 {
 	_window->setFramerateLimit(60);
 
-	sf::Vector2f position{ 50.f, 50.f };
+	sf::Vector2f position{ 4*64.f, 12*64.f };
 	createTank2(player, position, TTank::Player1);
 	position = sf::Vector2f{ 140.f, 240.f };
 	createBonus(position);
 	position = sf::Vector2f{ 340.f, 340.f };
 	createBonus(position);
-	position = sf::Vector2f{ 632.f, 632.f };
-	createTank2(ENEMY, position, TTank::Enemy);
+	position = sf::Vector2f{ 0.f, 0.f };
+	createTank2(manager.addEntity(), position, TTank::Enemy);
+	position = sf::Vector2f{ 6*64.f, 0.f };
+	createTank2(manager.addEntity(), position, TTank::Enemy);
+	position = sf::Vector2f{ 12*64.f, 0.f };
+	createTank2(manager.addEntity(), position, TTank::Enemy);
+	position = sf::Vector2f{ 5 * 64.f, 4*64.f };
+	createTank2(manager.addEntity(), position, TTank::Enemy);
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
 	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
@@ -119,26 +141,7 @@ void Game::update(float deltaTime)
 	manager.refresh();
 	manager.update(deltaTime);
 
-	/*auto& enemies(manager.getEntitiesByGroup(GEnemy));
-	for (auto& e : enemies)
-	{
-		if (player.getComponent<CPosition>().mapPos.x == e->getComponent<CPosition>().mapPos.x ||
-			player.getComponent<CPosition>().mapPos.y == e->getComponent<CPosition>().mapPos.y)
-			e->getComponent<CControl>().task = Task::Shoot;
-	}*/
-
-	if (player.getComponent<CPosition>().mapPos.x == ENEMY.getComponent<CPosition>().mapPos.x ||
-		player.getComponent<CPosition>().mapPos.y == ENEMY.getComponent<CPosition>().mapPos.y)
-	{
-		std::cout << "ROWNA SIE\n";
-		ENEMY.getComponent<CControl>().task = Task::Shoot;
-		if (ShootingManager::shooting(ENEMY.getComponent<CBulet>()))
-		{
-			ShootingManager::createBulet(this, manager, ENEMY, GBullet);
-		}
-	}
-		
-
+	
 
 	//Test collision with MAP
 	auto& tilesEntity(manager.getEntitiesByGroup(GTile));
@@ -161,29 +164,58 @@ void Game::update(float deltaTime)
 	}
 
 	
-
-	if (ShootingManager::shooting(player.getComponent<CBulet>()))
+	auto& enemies(manager.getEntitiesByGroup(BattleGameGroup::GTank));
+	for (auto& e : enemies)
 	{
-		ShootingManager::createBulet(this, manager, player, GBullet);
+		if ((player.getComponent<CPosition>().mapPos.x == e->getComponent<CPosition>().mapPos.x ||
+			player.getComponent<CPosition>().mapPos.y == e->getComponent<CPosition>().mapPos.y) &&
+			e->hasGroup(BattleGameGroup::GEnemy))
+		{
+			e->getComponent<CControl>().task = Task::Shoot;
+		}
+		if (ShootingManager::shooting((*e).getComponent<CBulet>()))
+			ShootingManager::createBulet(this, manager, *e, GBullet);
 	}
+
 	auto& bullets(manager.getEntitiesByGroup(GBullet));
 	for (auto& b : bullets)
-	for (auto& t : tilesEntity)
 	{
-		auto tRect = t->getComponent<CRectangle>();
 		auto bRect = b->getComponent<CRectangle>();
-		auto tileTag = t->getComponent<CRectangle>().TAG;
-		if(!(tileTag == TWater || tileTag == TForest || tileTag == TRoad))
-		if (Collision::AABB(bRect, tRect))
+		for (auto& t : tilesEntity)
 		{
-			b->destroy();
-			if(!(Collision::ColWindow(bRect)))
-				t->destroy();
-			break;
+			auto tRect = t->getComponent<CRectangle>();
+			auto tileTag = t->getComponent<CRectangle>().TAG;
+			if (!(tileTag == TWater || tileTag == TForest || tileTag == TRoad))
+				if (Collision::AABB(bRect, tRect))
+				{
+					b->destroy();
+					if (!(Collision::ColWindow(bRect)))
+						t->destroy();
+					break;
+				}
+			if ((Collision::ColWindow(bRect)))
+				b->destroy();
 		}
-		if ((Collision::ColWindow(bRect)))
-			b->destroy();
+
+		for (auto& e : enemies)
+		{
+			if ((e != b->getComponent<CBulet>().whois))
+			{
+				auto eRect = e->getComponent<CRectangle>();
+				if (Collision::AABB(bRect, eRect))
+				{
+					b->destroy();
+					if (!(Collision::ColWindow(bRect)))
+						if (e != &player)
+							e->destroy();
+						else
+							e->getComponent<CPosition>().position = sf::Vector2f{ 4 * 64.f, 12 * 64.f };
+					break;
+				}
+			}
+		}
 	}
+	
 }
 
 void Game::render()
@@ -250,13 +282,17 @@ Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t m
 	if (mTag == TTank::Player1)
 		entity.addComponent<CPlayerControl>();
 	else
+	{
 		entity.addGroup(BattleGameGroup::GEnemy);
+		entity.getComponent<CControl>().task = Task::Down;
+	}
+		
 	
 	
 
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,15,15 });
-	//entity.addGroup(BattleGameGroup::GTank);
+	entity.addGroup(BattleGameGroup::GTank);
 
 	return entity;
 }

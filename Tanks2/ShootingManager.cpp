@@ -52,10 +52,13 @@ Entity & ShootingManager::createBulet(Game * game, Manager & manager, Entity & t
 	
 	
 	auto& entity(manager.addEntity());
-	entity.addComponent<CPosition>();
+	entity.addComponent<CPosition>(positionTank);
 	entity.addComponent<CPhysics>(sizeBullet, 500);
 	entity.addComponent<CRectangle>(game);
+	entity.addComponent<CBulet>();
 	entity.addGroup(group);
+
+	entity.getComponent<CBulet>().whois = &tank;
 
 	float speedBullet = entity.getComponent<CPhysics>().speed;
 	if (rectLeft == 0 || rectLeft == 1) // turn up

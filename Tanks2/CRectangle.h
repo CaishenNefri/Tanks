@@ -37,6 +37,7 @@ public:
 	void init() override
 	{
 		cPosition = &entity->getComponent<CPosition>();
+		shape.setPosition(cPosition->position);
 		cPhysics = &entity->getComponent<CPhysics>();
 
 		shape.setSize(cPhysics->size);

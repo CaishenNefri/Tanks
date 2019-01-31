@@ -21,7 +21,7 @@ public:
 		key = false;
 		time = 0;
 	}
-
+	Entity* whois;
 private:	
 	//void init();
 	//void update() override;
