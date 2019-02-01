@@ -9,3 +9,5 @@
 #include "CBulet.h"
 #include "CControl.h"
 #include "CPlayerControl.h"
+#include "CAIEnemy.h"
+#include "CPlayer.h"

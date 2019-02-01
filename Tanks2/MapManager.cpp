@@ -14,24 +14,23 @@ MapManager::~MapManager()
 {
 }
 
-void MapManager::load(Game * game, const int *tiles, Manager & manager, const std::size_t group)
+int** MapManager::load(Game * game, const int *tiles, Manager & manager, const std::size_t group)
 {
-	/*sf::Texture texture;
-	texture.loadFromFile("Resources\Sprites\sprite.png");*/
-
 	sf::RectangleShape tileR;
 	tileR.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	tileR.setSize({ (float)m_TileSize, (float)m_TileSize});
 	sf::Vector2f scale = tileR.getScale();
 	tileR.scale(scale * (float)m_Scale);
 
-	/*sf::Sprite tile;
-	tile.setTexture(texture);
-	tile.scale(tile.getScale * m_Scale);*/
+	int** arr = new int*[m_MapSize.y];
+	for (int x = 0; x < m_MapSize.x; x++)
+		arr[x] = new int[m_MapSize.x];
+
+	
 
 	sf::IntRect pos = { m_BeginTile.x * m_TileSize,
-		m_BeginTile.y * m_TileSize,
-		m_TileSize, m_TileSize };
+						m_BeginTile.y * m_TileSize,
+						m_TileSize, m_TileSize };
 	
 	for (int y = 0; y < m_MapSize.y; y++)
 		for (int x = 0; x < m_MapSize.x; x++)
@@ -51,10 +50,19 @@ void MapManager::load(Game * game, const int *tiles, Manager & manager, const st
 				sf::Vector2f position{ (float)positionI.x, (float)positionI.y };
 				tileR.setPosition(position);
 
+				
+
 				std::size_t tileType = selectTagTile(tiles[act]);
 				createTile(game, manager, position, tileR, group, tileType);
 			}
+
+			if (tiles[act] == 55)
+				arr[y][x] = 0;
+			else
+				arr[y][x] = 1;
 		}
+
+	return arr;
 }
 
 std::size_t MapManager::selectTagTile(const int type)

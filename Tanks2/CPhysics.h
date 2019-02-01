@@ -20,6 +20,7 @@ public:
 
 	void update(float mFT) override
 	{
+		cPosition->lastPosition = cPosition->position;
 		cPosition->position += velocity * mFT;
 	}
 

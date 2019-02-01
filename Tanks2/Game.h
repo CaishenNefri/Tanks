@@ -37,4 +37,9 @@ private:
 
 	Entity& createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t mTag);
 	void createBonus2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
+
+private:
+	void GameStateLoose();
+
+	bool isRunning;
 };

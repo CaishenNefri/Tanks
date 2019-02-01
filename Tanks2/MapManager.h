@@ -23,7 +23,7 @@ public:
 	MapManager();
 	~MapManager();
 
-	void load(Game * game, const int *tiles, Manager & manager, const std::size_t group);
+	int** load(Game * game, const int *tiles, Manager & manager, const std::size_t group);
 private:
 	sf::Vector2i m_MapSize;
 	sf::Vector2i m_BeginTile;

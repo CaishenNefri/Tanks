@@ -17,10 +17,15 @@ MapManager map;
 auto& player(manager.addEntity());
 //auto& ENEMY(manager.addEntity());
 
+int** rawGrid;
+
 const int tiles[169] = {
-	55, 55, 10, 55, 55, 55, 55, 10, 55, 55, 55, 55, 55,
-	55, 00, 10, 55, 55, 55, 55, 10, 21, 55, 55, 55, 55,
-	30, 00, 55, 10, 10, 55, 10, 10, 22, 55, 55, 00, 00,
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	//55, 55, 10, 55, 55, 55, 55, 10, 55, 55, 55, 55, 55,
+	//55, 00, 10, 55, 55, 55, 55, 10, 21, 55, 55, 55, 55,
+	//30, 00, 55, 10, 10, 55, 10, 10, 22, 55, 55, 00, 00,
 	30, 55, 00, 55, 55, 55, 55, 10, 21, 55, 55, 55, 55,
 	30, 55, 00, 55, 55, 55, 10, 10, 10, 10, 10, 10, 55,
 	30, 10, 10, 10, 30, 55, 10, 10, 55, 55, 55, 55, 55,
@@ -59,7 +64,7 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	createBonus(position);
 	position = sf::Vector2f{ 340.f, 340.f };
 	createBonus(position);
-	position = sf::Vector2f{ 0.f, 0.f };
+	position = sf::Vector2f{ 1.f, 1.f };
 	createTank2(manager.addEntity(), position, TTank::Enemy);
 	position = sf::Vector2f{ 6*64.f, 0.f };
 	createTank2(manager.addEntity(), position, TTank::Enemy);
@@ -73,9 +78,18 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	InputManager::GetInstance()->AddAction(Input::Left, sf::Keyboard::Key::Left);
 	InputManager::GetInstance()->AddAction(Input::Right, sf::Keyboard::Key::Right);
 	InputManager::GetInstance()->AddAction(Input::Shoot, sf::Keyboard::Key::X);
-	
-	//map.load(tiles, { 13, 13 }, 16, { 0,0 });
-	map.load(this, tiles, manager, BattleGameGroup::GTile);
+
+	rawGrid = map.load(this, tiles, manager, BattleGameGroup::GTile);
+	std::cout << "############TEST RAW GRID############\n";
+	for (int y = 0; y < 13; y++)
+	{
+		for (int x = 0; x < 13; x++)
+		{
+			std::cout << rawGrid[y][x] << ", ";
+		}
+		std::cout << std::endl;
+	}
+		
 }
 
 
@@ -85,6 +99,10 @@ Game::~Game()
 	delete _window;
 	_window = nullptr;
 	ResourceManager::GetInstance()->CleanUp();
+
+	for (int y = 0; y < 13; y++)
+		delete[] rawGrid[y];
+	delete[] rawGrid;
 	//TODO Add other pointers
 }
 
@@ -95,7 +113,7 @@ void Game::run()
 	sf::Clock clock;
 	float deltaTime{  }; //TODO what the fuck?
 
-	bool isRunning = true;
+	isRunning = true;
 	while (isRunning)
 	{
 		//calculate time between frames
@@ -135,8 +153,12 @@ bool Game::processEvents()
 
 void Game::update(float deltaTime)
 {
-	auto playerPos = player.getComponent<CPosition>().position;
+	auto playerPos = player.getComponent<CPosition>().mapPos;
 	auto playerVel = player.getComponent<CPhysics>().velocity;
+	
+	auto& enemies(manager.getEntitiesByGroup(BattleGameGroup::GEnemy));
+	for (auto& e : enemies)
+		e->getComponent<CAIEnemy>().destPos = playerPos;
 
 	manager.refresh();
 	manager.update(deltaTime);
@@ -145,13 +167,15 @@ void Game::update(float deltaTime)
 
 	//Test collision with MAP
 	auto& tilesEntity(manager.getEntitiesByGroup(GTile));
+	auto& tanks(manager.getEntitiesByGroup(BattleGameGroup::GTank));
 	for (auto& t : tilesEntity)
+	for (auto& T : tanks)
 	{
-		if (Collision::AABB(player.getComponent <CRectangle>(),
+		if (Collision::AABB(T->getComponent<CRectangle>(),
 			t->getComponent<CRectangle>()) ||
-			Collision::ColWindow(player.getComponent<CRectangle>()))
+			Collision::ColWindow(T->getComponent<CRectangle>()))
 		{
-			player.getComponent<CPosition>().position = playerPos;
+			T->getComponent<CPosition>().position = T->getComponent<CPosition>().lastPosition;
 		}
 	}
 
@@ -164,14 +188,35 @@ void Game::update(float deltaTime)
 	}
 
 	
-	auto& enemies(manager.getEntitiesByGroup(BattleGameGroup::GTank));
-	for (auto& e : enemies)
+	
+	for (auto& e : tanks)
 	{
-		if ((player.getComponent<CPosition>().mapPos.x == e->getComponent<CPosition>().mapPos.x ||
-			player.getComponent<CPosition>().mapPos.y == e->getComponent<CPosition>().mapPos.y) &&
+		sf::Vector2i enemyPos = e->getComponent<CPosition>().mapPos;
+		if ((playerPos.x == enemyPos.x ||
+			playerPos.y == enemyPos.y) &&
 			e->hasGroup(BattleGameGroup::GEnemy))
 		{
-			e->getComponent<CControl>().task = Task::Shoot;
+			sf::Vector2i absolute{ std::abs(playerPos.x - enemyPos.x),
+								   std::abs(playerPos.y - enemyPos.y) };
+			if (absolute.x <= 5 & absolute.y <= 5)
+			{
+				sf::IntRect rect = e->getComponent<CRectangle>().shape.getTextureRect();
+				if (playerPos.x <= enemyPos.x &&
+					playerPos.y == enemyPos.y)
+					rect.left = 16 * 2;
+				else if (playerPos.x >= enemyPos.x &&
+					playerPos.y == enemyPos.y)
+					rect.left = 16 * 6;
+				else if (playerPos.y <= enemyPos.y &&
+					playerPos.x == enemyPos.x)
+					rect.left = 0;
+				else if (playerPos.y >= enemyPos.y &&
+					playerPos.x == enemyPos.x)
+					rect.left = 16 * 4;
+
+				e->getComponent<CRectangle>().shape.setTextureRect(rect);
+				e->getComponent<CControl>().task = Task::Shoot;
+			}
 		}
 		if (ShootingManager::shooting((*e).getComponent<CBulet>()))
 			ShootingManager::createBulet(this, manager, *e, GBullet);
@@ -197,7 +242,7 @@ void Game::update(float deltaTime)
 				b->destroy();
 		}
 
-		for (auto& e : enemies)
+		for (auto& e : tanks)
 		{
 			if ((e != b->getComponent<CBulet>().whois))
 			{
@@ -209,13 +254,22 @@ void Game::update(float deltaTime)
 						if (e != &player)
 							e->destroy();
 						else
+						{
 							e->getComponent<CPosition>().position = sf::Vector2f{ 4 * 64.f, 12 * 64.f };
+							e->getComponent<CPlayer>().lives--;
+						}
 					break;
 				}
 			}
 		}
 	}
 	
+
+
+
+
+	if (player.getComponent<CPlayer>().lives == 0)
+		GameStateLoose();
 }
 
 void Game::render()
@@ -279,19 +333,26 @@ Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t m
 	entity.addComponent<CBulet>();
 	entity.addComponent<CTank>();
 	entity.addComponent<CControl>();
+	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
+	
+
+
+	int randText = std::rand() % 8;
 	if (mTag == TTank::Player1)
+	{
 		entity.addComponent<CPlayerControl>();
+		entity.addComponent<CPlayer>();
+		entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,15,15 });
+	}
 	else
 	{
 		entity.addGroup(BattleGameGroup::GEnemy);
 		entity.getComponent<CControl>().task = Task::Down;
-	}
-		
-	
-	
+		entity.addComponent<CAIEnemy>();
+		entity.getComponent<CPhysics>().speed -= 50;
 
-	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
-	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11 * 16,15,15 });
+		entity.getComponent<CRectangle>().shape.setTextureRect({ 8*16, randText * 16,15,15 });
+	}
 	entity.addGroup(BattleGameGroup::GTank);
 
 	return entity;
@@ -309,6 +370,13 @@ void Game::createBonus2(Entity& entity,sf::Vector2f& mPosition, std::string mTag
 	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
 	entity.getComponent<CRectangle>().shape.setTextureRect({ (16 * 21) - 1,7 * 16,16,16 });
 	entity.addGroup(BattleGameGroup::GBonus);
+}
+
+void Game::GameStateLoose()
+{
+	isRunning = false;
+	_window->close();
+	std::cout << "\n\n###YOU LOOSE THE GAME###\n\n";
 }
 
 void CRectangle::draw() { game->render(shape); }

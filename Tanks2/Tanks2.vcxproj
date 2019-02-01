@@ -168,12 +168,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="CAIEnemy.h" />
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CBulet.h" />
     <ClInclude Include="CControl.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="CPlayerControl.h" />
+    <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CTank.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="CPhysics.h" />
@@ -190,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animator.cpp" />
+    <ClCompile Include="CAIEnemy.cpp" />
     <ClCompile Include="CControl.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CPlayerControl.cpp" />
