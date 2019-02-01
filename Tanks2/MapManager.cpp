@@ -77,6 +77,8 @@ std::size_t MapManager::selectTagTile(const int type)
 		return TRoad;
 	if (type == 10)
 		return TSteel;
+	if (type == 23)
+		return TBase;
 	
 	return TNull;
 }

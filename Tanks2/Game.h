@@ -35,7 +35,7 @@ private:
 	/*Entity& createTank(sf::Vector2f& mPosition);*/
 	Entity& createBonus(sf::Vector2f& mPosition);
 
-	Entity& createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t mTag);
+	Entity& createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t mTag, int mType);
 	void createBonus2(Entity& entity, sf::Vector2f& mPosition, std::string mTag);
 
 private:

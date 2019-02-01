@@ -14,6 +14,7 @@ enum tileType : std::size_t
 	TWater,
 	TForest,
 	TRoad,
+	TBase,
 	TNull
 };
 

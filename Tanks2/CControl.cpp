@@ -33,7 +33,7 @@ void CControl::update(float mFT)
 		break;
 	}
 
-	task = Task::Idle;
+	//task = Task::Idle;
 
 	if (cPhysics->velocity.x != 0 || cPhysics->velocity.y != 0)
 	{

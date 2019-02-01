@@ -59,19 +59,19 @@ Game::Game() : _window(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Battl
 	_window->setFramerateLimit(60);
 
 	sf::Vector2f position{ 4*64.f, 12*64.f };
-	createTank2(player, position, TTank::Player1);
+	createTank2(player, position, TTank::Player1, 0);
 	position = sf::Vector2f{ 140.f, 240.f };
 	createBonus(position);
 	position = sf::Vector2f{ 340.f, 340.f };
 	createBonus(position);
 	position = sf::Vector2f{ 1.f, 1.f };
-	createTank2(manager.addEntity(), position, TTank::Enemy);
+	createTank2(manager.addEntity(), position, TTank::Enemy, 0);
 	position = sf::Vector2f{ 6*64.f, 0.f };
-	createTank2(manager.addEntity(), position, TTank::Enemy);
+	createTank2(manager.addEntity(), position, TTank::Enemy, 1);
 	position = sf::Vector2f{ 12*64.f, 0.f };
-	createTank2(manager.addEntity(), position, TTank::Enemy);
+	createTank2(manager.addEntity(), position, TTank::Enemy, 5);
 	position = sf::Vector2f{ 5 * 64.f, 4*64.f };
-	createTank2(manager.addEntity(), position, TTank::Enemy);
+	//createTank2(manager.addEntity(), position, TTank::Enemy);
 
 	InputManager::GetInstance()->AddAction(Input::Up, sf::Keyboard::Key::Up);
 	InputManager::GetInstance()->AddAction(Input::Down, sf::Keyboard::Key::Down);
@@ -158,6 +158,7 @@ void Game::update(float deltaTime)
 	
 	auto& enemies(manager.getEntitiesByGroup(BattleGameGroup::GEnemy));
 	for (auto& e : enemies)
+		if(e->getComponent<CAIEnemy>().type == 5)
 		e->getComponent<CAIEnemy>().destPos = playerPos;
 
 	manager.refresh();
@@ -171,13 +172,14 @@ void Game::update(float deltaTime)
 	for (auto& t : tilesEntity)
 	for (auto& T : tanks)
 	{
-		if (Collision::AABB(T->getComponent<CRectangle>(),
-			t->getComponent<CRectangle>()) ||
-			Collision::ColWindow(T->getComponent<CRectangle>()))
-		{
-			T->getComponent<CPosition>().position = T->getComponent<CPosition>().lastPosition;
-		}
+			if (Collision::AABB(T->getComponent<CRectangle>(),
+				t->getComponent<CRectangle>()) ||
+				Collision::ColWindow(T->getComponent<CRectangle>()))
+			{
+				T->getComponent<CPosition>().position = T->getComponent<CPosition>().lastPosition;
+			}
 	}
+	
 
 	
 
@@ -198,7 +200,7 @@ void Game::update(float deltaTime)
 		{
 			sf::Vector2i absolute{ std::abs(playerPos.x - enemyPos.x),
 								   std::abs(playerPos.y - enemyPos.y) };
-			if (absolute.x <= 5 & absolute.y <= 5)
+			if (absolute.x <= 5 && absolute.y <= 5)
 			{
 				sf::IntRect rect = e->getComponent<CRectangle>().shape.getTextureRect();
 				if (playerPos.x <= enemyPos.x &&
@@ -286,24 +288,6 @@ void Game::render()
 	_window->display();
 }
 
-//Entity& Game::createTank(sf::Vector2f& mPosition)
-//{
-//	sf::Vector2f size{ 64.f, 64.f };
-//	auto& entity(manager.addEntity());
-//	float speed = 200.f;
-//
-//	entity.addComponent<CPosition>(mPosition);
-//	entity.addComponent<CPhysics>();
-//	entity.addComponent<CRectangle>(this, size);
-//	entity.addComponent<CAnimation>(9, 2);
-//	entity.addComponent<CPlayerControl>(speed);
-//	
-//	entity.getComponent<CRectangle>().shape.setTexture(ResourceManager::GetInstance()->RequestTexture("sprite"));
-//	entity.getComponent<CRectangle>().shape.setTextureRect({ 0,11*16,16,16});
-//	entity.addGroup(BattleGameGroup::GTank);
-//
-//	return entity;
-//}
 
 Entity& Game::createBonus(sf::Vector2f& mPosition)
 {
@@ -321,7 +305,7 @@ Entity& Game::createBonus(sf::Vector2f& mPosition)
 	return entity;
 }
 
-Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t mTag)
+Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t mTag, int mType)
 {
 	sf::Vector2f size{ 55.f, 55.f };
 	float speed = 200.f;
@@ -337,7 +321,6 @@ Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t m
 	
 
 
-	int randText = std::rand() % 8;
 	if (mTag == TTank::Player1)
 	{
 		entity.addComponent<CPlayerControl>();
@@ -348,10 +331,10 @@ Entity& Game::createTank2(Entity& entity, sf::Vector2f& mPosition, std::size_t m
 	{
 		entity.addGroup(BattleGameGroup::GEnemy);
 		entity.getComponent<CControl>().task = Task::Down;
-		entity.addComponent<CAIEnemy>();
+		entity.addComponent<CAIEnemy>().type = mType;
 		entity.getComponent<CPhysics>().speed -= 50;
 
-		entity.getComponent<CRectangle>().shape.setTextureRect({ 8*16, randText * 16,15,15 });
+		entity.getComponent<CRectangle>().shape.setTextureRect({ 8*16, mType* 16,15,15 });
 	}
 	entity.addGroup(BattleGameGroup::GTank);
 
