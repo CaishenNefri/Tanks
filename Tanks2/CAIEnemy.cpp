@@ -52,6 +52,22 @@ void CAIEnemy::update(float mFT)
 			}
 		}
 	}
+	else if (type == 5)
+	{
+		int rand = std::rand() % 100;
+		if (rand <= 20)
+		{
+			sf::Vector2i actPos = cPosition->mapPos;
+			if (destPos.x > actPos.x)
+				cControl->task = Task::Right;
+			else if (destPos.x < actPos.x)
+				cControl->task = Task::Left;
+			else if (destPos.y > actPos.y)
+				cControl->task = Task::Down;
+			else if (destPos.y < actPos.y)
+				cControl->task = Task::Up;
+		}
+	}
 	else
 	{
 		sf::Vector2i actPos = cPosition->mapPos;
