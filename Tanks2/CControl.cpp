@@ -30,6 +30,7 @@ void CControl::update(float mFT)
 			cBulet->key = true;
 			cBulet->shooting = true;
 		}
+		task = Task::Idle;
 		break;
 	}
 

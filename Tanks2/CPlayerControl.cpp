@@ -11,7 +11,12 @@ void CPlayerControl::update(float mFT)
 		cControl->task = Task::Left;
 	else if (input->IsActionTriggered(Input::Right))
 		cControl->task = Task::Right;
-
+	else
+		cControl->task = Task::Idle;
+	
 	if (input->IsActionTriggered(Input::Shoot))
 		cControl->task = Task::Shoot;
+	
+
+
 }
